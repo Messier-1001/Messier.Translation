@@ -662,7 +662,8 @@ final class Locale
             return $refLocale;
          }
 
-         if ( null !== $_SESSION && Locale::TryParseArray( $refLocale, $_SESSION, $acceptedRequestParams ) )
+         /** @noinspection UnSafeIsSetOverArrayInspection */
+         if ( isset( $_SESSION ) && Locale::TryParseArray( $refLocale, $_SESSION, $acceptedRequestParams ) )
          {
             return $refLocale;
          }
