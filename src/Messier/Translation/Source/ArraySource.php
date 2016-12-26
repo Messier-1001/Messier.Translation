@@ -342,32 +342,7 @@ class ArraySource extends AbstractSource
             $translations = [];
          }
 
-         $data = [];
-
-         if ( $this->_useNumericId )
-         {
-            foreach ( $translations as $identifier => $data )
-            {
-               if ( ! \is_int( $identifier ) )
-               {
-                  continue;
-               }
-               $data[ $identifier ] = $data;
-            }
-         }
-         else
-         {
-            foreach ( $translations as $identifier => $data )
-            {
-               if ( ! \is_string( $identifier ) )
-               {
-                  continue;
-               }
-               $data[ $identifier ] = $data;
-            }
-         }
-
-         $this->_translations = \array_merge( $this->_translations, $data );
+         $this->_translations = \array_merge( $this->_translations, $translations );
 
       }
 
