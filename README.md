@@ -14,14 +14,15 @@ or inside the `composer.json`:
 
 ```json
    "require": {
-      "messier1001/messier.translation": "^0.1.0"
+      "messier1001/messier.translation": "^0.2.0"
    },
 ```
 
 
 ## Usage
 
-If you want to use this package inside you're application include the depending composer autoload.php
+If you want to use this package inside you're application include the depending
+composer autoload.php
 
 ### First step, the Locale
 
@@ -43,7 +44,7 @@ Locale::Create(
 
 This creates the new Locale by checking the following places to get the required information
 
-* First The current URL part is checked, if it contains an valid locale string, it is used (you can disable it by
+* First The current URL part is checked, if it contains an valid locale string, it is used (you can disable it by 
   setting the 2nd Create parameter to FALSE.
 * Next it checks if one of the defined request parameters (3rd parameter) is defined by $_POST, $_GET or $_SESSION
 * After that, its checked if the browser sends some information about the preferred locale/language.
@@ -72,14 +73,14 @@ For example if you have an class that requires Localization
 
 ```php
 
-use \Messier\Translation\{Locale,Translator};
-use \Messier\Translation\Source\ArraySource;
+use \Messier\Translation\{Locale,Translator,ILocalizable};
+use \Messier\Translation\Sources\ArraySource;
 
-class Foo
+class Foo implements ILocalizable
 {
 
    /**
-    * @type \Beluga\Translation\Translator
+    * @type \Messier\Translation\Translator
     */
    private $trans;
    
@@ -98,24 +99,30 @@ class Foo
          $_locale = Locale::GetGlobalInstance();
       }
       
-      if ( null !== $_locale )
+      else
       {
-         $source = ArraySource::LoadFromFolder( __DIR__ . '/i18n', $_locale, false );
-         $this->trans = new Translator( $source )
+         $_locale = Locale::Create( new Locale( 'en' ) )
       }
+      
+      $this->trans = new Translator(
+         ArraySource::LoadFromFolder( __DIR__ . '/i18n', $_locale )
+      );
       
    }
    
-   public function getTranslation( $mainLanguageText )
+   /**
+    * Gets the translator that handles the translation behind the class scenes.
+    *
+    * @return \Messier\Translation\ITranslator
+    */
+   public function getTranslator() : ?ITranslator
    {
-      
-      if ( ! ( $this->trans instanceof ITranlator ) )
-      {
-         return $mainLanguageText;
-      }
-      
-      return $this->trans->translateByText( $mainLanguageText );
-      
+      return $this->trans;
+   }
+   
+   private function doAnyThing()
+   {
+      $this->trans->getTranslation( $identifier, ?string $defaultTranslation = null )
    }
    
    
